@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
 import {
   BookOpen, LayoutDashboard, Users, CreditCard, LogOut,
-  Settings, BarChart3, ChevronRight
+  BarChart3, ChevronRight, Video
 } from "lucide-react";
 
 interface NavUser {
@@ -18,6 +18,7 @@ const navItems = [
   { href: "/admin/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/admin/courses", label: "Courses", icon: BookOpen },
   { href: "/admin/students", label: "Students", icon: Users },
+  { href: "/admin/teachers", label: "Teachers", icon: Video },
   { href: "/admin/payments", label: "Payments", icon: CreditCard },
 ];
 
