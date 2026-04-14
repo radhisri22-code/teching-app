@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BookOpen, LayoutDashboard, Library, User, LogOut } from "lucide-react";
+import { BookOpen, LayoutDashboard, Library, User, LogOut, Video } from "lucide-react";
 import { signOut } from "next-auth/react";
 
 interface NavUser {
@@ -54,6 +54,14 @@ export function StudentNavbar({ user }: { user: NavUser }) {
           </div>
 
           <div className="flex items-center gap-3">
+            {/* Teach link */}
+            <Link
+              href={user.role === "TEACHER" ? "/teacher/dashboard" : "/become-teacher"}
+              className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 bg-emerald-50 text-emerald-700 text-xs font-semibold rounded-lg hover:bg-emerald-100 transition-colors border border-emerald-200"
+            >
+              <Video className="w-3.5 h-3.5" />
+              {user.role === "TEACHER" ? "Teacher Studio" : "Teach"}
+            </Link>
             {user.image ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img

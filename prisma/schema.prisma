@@ -7,43 +7,75 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// Role: STUDENT | ADMIN
+// Role: STUDENT | TEACHER | ADMIN
 // PaymentStatus: PENDING | COMPLETED | FAILED | REFUNDED
 // Level: BEGINNER | INTERMEDIATE | ADVANCED
+// VideoType: URL | YOUTUBE | UPLOAD
 
 model User {
-  id            String       @id @default(cuid())
-  name          String?
-  email         String?      @unique
-  emailVerified DateTime?
-  image         String?
-  role          String       @default("STUDENT")
-  accounts      Account[]
-  sessions      Session[]
-  enrollments   Enrollment[]
-  payments      Payment[]
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @updatedAt
+  id             String       @id @default(cuid())
+  name           String?
+  email          String?      @unique
+  emailVerified  DateTime?
+  image          String?
+  role           String       @default("STUDENT")
+  bio            String?
+  accounts       Account[]
+  sessions       Session[]
+  enrollments    Enrollment[]
+  payments       Payment[]
+  teacherCourses Course[]     @relation("TeacherCourses")
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
 }
 
 model Course {
-  id           String       @id @default(cuid())
+  id           String          @id @default(cuid())
   title        String
   description  String
   longDesc     String?
-  price        Float        @default(0)
+  price        Float           @default(0)
   thumbnail    String?
   category     String
-  level        String       @default("BEGINNER")
+  level        String          @default("BEGINNER")
   duration     String?
   instructor   String
-  rating       Float        @default(0)
-  totalRatings Int          @default(0)
-  published    Boolean      @default(true)
+  teacherId    String?
+  teacher      User?           @relation("TeacherCourses", fields: [teacherId], references: [id])
+  rating       Float           @default(0)
+  totalRatings Int             @default(0)
+  published    Boolean         @default(false)
+  sections     CourseSection[]
   enrollments  Enrollment[]
   payments     Payment[]
-  createdAt    DateTime     @default(now())
-  updatedAt    DateTime     @updatedAt
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+}
+
+model CourseSection {
+  id        String   @id @default(cuid())
+  courseId  String
+  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  title     String
+  order     Int      @default(0)
+  lessons   Lesson[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Lesson {
+  id          String        @id @default(cuid())
+  sectionId   String
+  section     CourseSection @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+  title       String
+  description String?
+  videoUrl    String?
+  videoType   String        @default("URL")
+  duration    String?
+  order       Int           @default(0)
+  isFree      Boolean       @default(false)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
 }
 
 model Enrollment {
